@@ -2,7 +2,9 @@
 
 **Reg. No.** 27578/2024 | **Course:** Web Technology CAT | **Deadline:** before 2 November 2026
 
-The store name "FocalPoint" is a placeholder. To rename it, change it in `assets/js/layout.js` and the page titles.
+The store name "FocalPoint" is a placeholder. To rename it, change it in `includes/header.php` and `includes/footer.php`.
+
+> **Current state:** the PHP and MySQL version is written, but it has not been run yet because this computer has no PHP or MySQL. It must be tested on a computer with XAMPP. [README.md](README.md) has the setup steps and a test checklist.
 
 ## The approach
 
@@ -20,10 +22,12 @@ Build the front end now on mock data, in a way that makes the PHP step mostly a 
 | Date | Work |
 |---|---|
 | Fri 30 Oct | Images, steps 1 to 6 |
-| Sat 31 Oct | Steps 7 to 11, front end finished. **Install XAMPP today.** |
-| Sun 1 Nov | Phase 2 (PHP and MySQL), final test, submit |
+| Sat 31 Oct | Steps 7 to 11, front end finished |
+| Sun 1 Nov | Phase 2 tested on a computer with XAMPP, submit |
 
 ## Project structure
+
+This is the Phase 1 structure, kept for reference. README.md shows the current one.
 
 ```text
 Shop/
@@ -116,18 +120,20 @@ Add, change quantity, remove, show total. Saved in `localStorage`. **No payment 
 
 **Check:** a full walkthrough from a cleared `localStorage` works.
 
-## Phase 2: PHP and MySQL (after installing XAMPP)
+## Phase 2: PHP and MySQL
 
-1. Install XAMPP, start Apache and MySQL, move the project to `htdocs/Shop`.
-2. Create the `camera_store` database in phpMyAdmin: `products` and `users` tables, seeded from `data.js`.
-3. Add `config/db.php` with a PDO connection.
-4. Rename pages to `.php`. Replace `layout.js` with `includes/header.php` and `includes/footer.php`.
-5. Render product lists and details from MySQL using PHP loops, reusing the same card markup.
-6. Replace admin CRUD with PHP form handling, using prepared statements, server-side validation and redirect messages.
-7. Handle real image uploads to `uploads/`, checking file type and size.
-8. Real login with `password_hash`, `password_verify` and sessions. Remove the demo login hint from the login page.
-9. Keep the JavaScript for live search, the cart and form checks.
-10. Export `camera_store.sql`, test everything, and zip for submission.
+The code for steps 1 to 8 is written but not yet run. Steps 9 and 10 need a computer with XAMPP.
+
+1. `database/camera_store.sql` creates the `categories`, `products`, `users` and `messages` tables, seeded from the mock data.
+2. `config/db.php` holds the settings and the PDO connection.
+3. Pages are now `.php`, with a shared `includes/header.php` and `includes/footer.php`.
+4. Product lists and details render from MySQL using PHP loops, with the same card markup.
+5. Admin CRUD uses PHP form handling, prepared statements, server-side validation and redirect messages.
+6. Image uploads go to `uploads/`, with file type and size checks.
+7. Login uses `password_verify` and sessions. The demo login hint moved to README.md.
+8. The cart moved into the PHP session. JavaScript still handles live search, the mobile menu, the delete dialog and the image preview.
+9. **To do:** clone into `htdocs`, import the SQL and open `setup-check.php`.
+10. **To do:** go through the test checklist in README.md, then submit.
 
 ## How this maps to the marks
 

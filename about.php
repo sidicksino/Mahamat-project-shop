@@ -1,30 +1,51 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>About and Contact | FocalPoint</title>
-  <meta name="description" content="FocalPoint sells cameras, lenses and studio gear in Kigali, Rwanda.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%231c1a17'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23c23a24'/%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=DM+Mono&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="assets/css/base.css">
-  <link rel="stylesheet" href="assets/css/layout.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/pages.css">
-</head>
-<body data-page="about">
-  <div id="site-header"></div>
+<?php
+// About page and contact form. Messages are saved in the messages table.
 
-  <main>
+require __DIR__ . '/includes/bootstrap.php';
+
+$errors = [];
+$formMessage = null;
+$values = ['name' => '', 'email' => '', 'body' => ''];
+
+if (is_post()) {
+    foreach ($values as $field => $unused) {
+        $values[$field] = post_text($field);
+    }
+
+    if (strlen($values['name']) < 2 || strlen($values['name']) > 100) {
+        $errors['name'] = 'Enter your name.';
+    }
+    if (filter_var($values['email'], FILTER_VALIDATE_EMAIL) === false || strlen($values['email']) > 150) {
+        $errors['email'] = 'Enter a valid email address.';
+    }
+    if (strlen($values['body']) < 10 || strlen($values['body']) > 1000) {
+        $errors['body'] = 'Enter a message of 10 to 1000 characters.';
+    }
+
+    if (!csrf_is_valid()) {
+        $formMessage = 'Your session expired. Please try again.';
+    } elseif ($errors) {
+        $formMessage = 'Please fix the highlighted fields and try again.';
+    } else {
+        $statement = db()->prepare('INSERT INTO messages (name, email, body) VALUES (?, ?, ?)');
+        $statement->execute([$values['name'], $values['email'], $values['body']]);
+        set_flash('Thanks, ' . $values['name'] . '. We will reply to ' . $values['email'] . ' soon.');
+        redirect('about.php#contact');
+    }
+}
+
+$page = 'about';
+$title = 'About Us and Contact';
+require __DIR__ . '/includes/header.php';
+?>
+  <main id="main-content">
     <section class="container about-intro">
       <div class="about-intro__text">
         <p class="eyebrow">About FocalPoint</p>
         <h1>Made for people who love making pictures.</h1>
         <p>FocalPoint is a camera and photography store based in Kigali. We stock the gear working photographers rely on, along with simple, affordable kit for anyone taking their first steps.</p>
         <p>From a first instant camera to a full studio lighting setup, we want you to leave with the right tool for the way you work, not just the most expensive one.</p>
-        <a class="btn" href="products.html">Browse the shop</a>
+        <a class="btn" href="products.php">Browse the shop</a>
       </div>
       <img class="about-intro__image" src="assets/images/banners/about.jpg" alt="Two photographers on a green hillside taking pictures of a city at sunrise">
     </section>
@@ -69,24 +90,30 @@
       </div>
 
       <div>
-        <div id="contact-message"></div>
-        <form class="contact__form" id="contact-form" novalidate>
-          <div class="field" data-field="name">
+        <?php show_flash(); ?>
+        <?php if ($formMessage !== null): ?>
+          <?= alert($formMessage, 'error') ?>
+        <?php endif; ?>
+
+        <form class="contact__form" method="post" action="about.php#contact" novalidate>
+          <?= csrf_field() ?>
+
+          <div class="<?= field_class($errors, 'name') ?>">
             <label for="contact-name">Your name</label>
-            <input id="contact-name" name="name" type="text" autocomplete="name" maxlength="100" aria-describedby="name-error">
-            <p class="field__error" id="name-error" hidden></p>
+            <input id="contact-name" name="name" type="text" value="<?= e($values['name']) ?>" autocomplete="name" maxlength="100" aria-describedby="name-error">
+            <?= field_error($errors, 'name') ?>
           </div>
 
-          <div class="field" data-field="email">
+          <div class="<?= field_class($errors, 'email') ?>">
             <label for="contact-email">Email address</label>
-            <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="150" aria-describedby="email-error">
-            <p class="field__error" id="email-error" hidden></p>
+            <input id="contact-email" name="email" type="email" value="<?= e($values['email']) ?>" autocomplete="email" maxlength="150" aria-describedby="email-error">
+            <?= field_error($errors, 'email') ?>
           </div>
 
-          <div class="field" data-field="body">
+          <div class="<?= field_class($errors, 'body') ?>">
             <label for="contact-body">Message</label>
-            <textarea id="contact-body" name="body" rows="5" maxlength="1000" aria-describedby="body-error"></textarea>
-            <p class="field__error" id="body-error" hidden></p>
+            <textarea id="contact-body" name="body" rows="5" maxlength="1000" aria-describedby="body-error"><?= e($values['body']) ?></textarea>
+            <?= field_error($errors, 'body') ?>
           </div>
 
           <button class="btn btn--accent" type="submit">Send message</button>
@@ -95,14 +122,4 @@
     </section>
   </main>
 
-  <div id="site-footer"></div>
-
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/store.js"></script>
-  <script src="assets/js/cart.js"></script>
-  <script src="assets/js/auth.js"></script>
-  <script src="assets/js/ui.js"></script>
-  <script src="assets/js/layout.js"></script>
-  <script src="assets/js/pages/about.js"></script>
-</body>
-</html>
+<?php require __DIR__ . '/includes/footer.php'; ?>

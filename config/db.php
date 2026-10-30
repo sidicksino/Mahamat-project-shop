@@ -1,0 +1,25 @@
+<?php
+// Database settings. These are the XAMPP defaults. If MySQL runs on another port, change DB_PORT.
+
+define('DB_HOST', '127.0.0.1');
+define('DB_PORT', '3306');
+define('DB_NAME', 'camera_store');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+
+// Returns one shared connection, opened the first time it is needed
+function db(): PDO
+{
+    static $pdo = null;
+
+    if ($pdo === null) {
+        $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8mb4';
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]);
+    }
+
+    return $pdo;
+}
