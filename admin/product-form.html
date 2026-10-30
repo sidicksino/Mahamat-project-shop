@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add or Edit Product | FocalPoint</title>
+  <meta name="description" content="FocalPoint sells cameras, lenses and studio gear in Kigali, Rwanda.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%231c1a17'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23c23a24'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=DM+Mono&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/pages.css">
+</head>
+<body data-page="admin" data-root="../">
+  <div id="site-header"></div>
+
+  <main>
+    <div class="container page-head">
+      <a class="back-link" href="index.html">&larr; Back to products</a>
+      <h1 id="form-title">Add product</h1>
+    </div>
+
+    <section class="container">
+      <div id="form-message"></div>
+
+      <form class="product-form" id="product-form" novalidate>
+        <div class="product-form__fields">
+          <div class="field" data-field="name">
+            <label for="name">Product name</label>
+            <input id="name" name="name" type="text" maxlength="120" aria-describedby="name-error">
+            <p class="field__error" id="name-error" hidden></p>
+          </div>
+
+          <div class="field" data-field="category">
+            <label for="category">Category</label>
+            <select id="category" name="category" aria-describedby="category-error">
+              <option value="">Choose a category</option>
+            </select>
+            <p class="field__error" id="category-error" hidden></p>
+          </div>
+
+          <div class="product-form__row">
+            <div class="field" data-field="price">
+              <label for="price">Price (RWF)</label>
+              <input id="price" name="price" type="number" min="1" step="1" inputmode="numeric" aria-describedby="price-error">
+              <p class="field__error" id="price-error" hidden></p>
+            </div>
+
+            <div class="field" data-field="stock">
+              <label for="stock">Stock quantity</label>
+              <input id="stock" name="stock" type="number" min="0" step="1" inputmode="numeric" aria-describedby="stock-error">
+              <p class="field__error" id="stock-error" hidden></p>
+            </div>
+          </div>
+
+          <div class="field" data-field="description">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="5" maxlength="1000" aria-describedby="description-error"></textarea>
+            <p class="field__error" id="description-error" hidden></p>
+          </div>
+        </div>
+
+        <div class="product-form__image">
+          <div class="field" data-field="image">
+            <label for="image">Product image</label>
+            <div class="image-preview" id="image-preview">
+              <span>No image chosen</span>
+            </div>
+            <input id="image" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="image-help image-error">
+            <p class="field__help" id="image-help">JPG, PNG or WebP, up to 5 MB.</p>
+            <p class="field__error" id="image-error" hidden></p>
+          </div>
+        </div>
+
+        <div class="product-form__actions">
+          <button class="btn btn--accent" id="form-submit" type="submit">Add product</button>
+          <a class="btn btn--outline" href="index.html">Cancel</a>
+        </div>
+      </form>
+
+      <div class="empty-state" id="form-missing" hidden>
+        <h2>Product not found</h2>
+        <p>This product may already have been deleted.</p>
+        <a class="btn" href="index.html">Back to products</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/store.js"></script>
+  <script src="../assets/js/cart.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/ui.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/pages/admin-form.js"></script>
+</body>
+</html>
